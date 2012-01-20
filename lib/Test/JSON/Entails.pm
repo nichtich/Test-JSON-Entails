@@ -16,7 +16,7 @@ Sometimes you want to compare JSON objects not for exact equivalence but for
 whether one structure subsumes the other. The other way round, one structure
 can be I<entailed> by another. For instance
 
-    { "foo": 1, "bar": [ "x"  }
+    { "foo": 1, "bar": [ "x" ] }
       
 is entailed by any of the following structures:
 
