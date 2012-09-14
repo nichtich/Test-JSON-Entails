@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 package Test::JSON::Entails;
-#ABSTRACT: Test whether one JSON structure entails another
+#ABSTRACT: Test whether one JSON or Perl structure entails/subsumes another
 
 =head1 SYNOPSIS
 
@@ -9,6 +9,11 @@ package Test::JSON::Entails;
 
   entails $json, { foo => 1 }, "JSON contains a foo element with value 1";
   entails $json, '{}', "JSON is a valid JSON object (no array)";
+
+  my $bar = { foo => 42, bar => 23 };
+  my $foo = { foo => 42 };
+
+  subsumes $bar => $foo, 'bar subsumes foo';  # $foo and $bar may be blessed
 
 =head1 DESCRIPTION
 
@@ -23,14 +28,14 @@ is entailed by any of the following structures:
     { "foo": 1, "bar": [ "x" ], "doz": 2 }       # additional hash element
     { "foo": 1, "bar": [ "x", "y" ], "doz": 2 }  # additional array element
 
-This module exports the testing method C<entails> to check such entailments.
-You can pass both, JSON strings with encoded JSON objects, and Perl hash
-references.
+This module exports the testing method C<entails> and its alias C<subsumes> to
+check such entailments.  You can pass, JSON strings with encoded JSON objects,
+Perl hash references, and blessed hash references.
 
 =cut
 
 use base 'Test::Builder::Module';
-our @EXPORT = qw(entails);
+our @EXPORT = qw(entails subsumes);
 
 use Carp;
 use JSON::Any;
@@ -88,6 +93,8 @@ sub _hash_entails {
 
     return;
 }
+
+*subsumes = *entails;
 
 sub _array_entails {
     my ($got, $expect, $path) = @_;
